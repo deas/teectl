@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  CLUSTER_NAME: example
+  KUBE_CONFIG: /.kube/config
+  PLUGIN_VERSION: "0.5.7"
+  PLUGIN_NAME: mc-auth-plugin
+  S3_BASE_URL: "s3://tqgg-scratch"
+  USER: "root" # teectl workaround: user: Current requires cgo or $USER set in environment
+kind: ConfigMap
+metadata:
+  name: teectl

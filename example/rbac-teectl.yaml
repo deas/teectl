@@ -1,0 +1,32 @@
+# Hacky af!
+# TODO: Don't abuse default sa
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefikee-teectl
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods/portforward"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+# error: no server found for cluster "some-cluster"
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "create"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefikee-teectl
+subjects:
+  - kind: ServiceAccount
+    name: default
+roleRef:
+  kind: Role
+  name: traefikee-teectl
+  apiGroup: ""

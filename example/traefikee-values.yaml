@@ -1,0 +1,17 @@
+cluster: example
+mesh:
+  enabled: true
+  # kubedns: false
+  # clusterDomain: "cluster.local"
+proxy:
+  replicas: 1
+controller:
+  staticConfig:
+    configMap:
+      name: example-static-config
+      key: "static.yaml"
+#proxy:
+#  serviceAnnotations:
+#    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:eu-central-1:acc-id:certificate/uuid
+#    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+#    service.beta.kubernetes.io/aws-load-balancer-type: nlb

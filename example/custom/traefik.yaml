@@ -1,0 +1,26 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard
+spec:
+  entryPoints:
+    - http
+  routes:
+  # Host(`dashboard-local`) && (PathPrefix(`/dashboard`) ||
+    - match: PathPrefix(`/dashboard`)
+      kind: Rule
+      middlewares:
+        - name: traefik-exposed-dashboard-basic-auth
+          namespace: traefikee
+      services:
+        - name: api@internal
+          kind: TraefikService
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-exposed-dashboard-basic-auth
+spec:
+  basicAuth:
+    secret: traefik-exposed-dashboard-basic-auth
+

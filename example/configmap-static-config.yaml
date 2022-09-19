@@ -1,0 +1,67 @@
+apiVersion: v1
+data:
+  #fileprovider.yaml: |
+
+  static.yaml: |
+    entryPoints:
+      http:
+        address: ":80"
+        #http:
+        #  redirections:
+        #    entryPoint:
+        #      to: https
+      https:
+        address: ":443"
+        #forwardedHeaders:
+        #  trustedIPs:
+        #    - "10.0.0.0/16"
+    providers:
+      kubernetesCRD: {}
+    #  file:
+    #    # filename: /var/run/traefikee/fileprovider/main.yaml
+    #    filename: /var/run/traefikee/fileprovider.yaml
+    api:
+      dashboard: true
+    mesh:
+      acl: false
+      ignoreNamespaces:
+      defaultMode: http
+    apiportal:
+      path: docs.json
+    tracing:
+      serviceName: traefik
+      #datadog:
+      #  debug: true
+      #  localAgentHostPort: datadog-agent.datadog:8126
+    #metrics:
+    #  datadog:
+    #    address: datadog-agent.datadog:8125
+    experimental:
+      # TODO: Are we lucky this "plays" with GitOps? Not blowing up while the plugin is not there?
+      plugins:
+        mc-auth-plugin:
+          moduleName: mc-auth-plugin
+          version: 0.5.7
+
+    authSources:
+      mainSource:
+        jwt:
+          publicKey: |
+            -----BEGIN PUBLIC KEY-----
+            MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAoW+xQQg5diofy267A/QI
+            wX9VcZvrszZceyPv3v2wIFO6Vza34gvHQ9FyK+Aa2JPmRaGe0yYiQEQwjnbRW4hO
+            wYcQP00mYROAUU5+TOvXsxzciJAC0oK+dpy2i1Map1cYgoT5dZ/gIMpqFkNt8AyW
+            jhIeMTCj6TJSOqSSDPfl180LZv7Gkz3pmzQ8ur0T6cNtq6yB1wD3CukGmkKLU5ef
+            NZaGJHOItmnIKCj2RCN/bufCg1kBTkunKOMQ2DMR8mnT0msHQsSVHFWRnEV0W6GW
+            hUa5FbVVdGkda8TC90/sojpy7+GsqwetuWMeKpEqUKXlL4hlwxGFBJ0nuCWiZoRo
+            AH4I1FwXC+WF1PM6ynE0rNvR/pIcdRJlL4iAn63FDnjVH+5SAT1uZmow/2XM+PN2
+            bYhfSTB0Zp2fK3L/z8h6nyHWgd1ADrZWHv02C1Xz9+DaX9xhJXlv0i3r4j1BNpXw
+            nGeo1jWxTmX/F84CoZ11duxe6lWEBarcNpz2+Guj8vP/ZdheIGDqD4zI0jgjDo39
+            8LLYQBlatAK81x0A1OMlAAgZgCOHyjG1JHPHZ3ZTei1qFqkEV4KRFxp4fHRCFR5n
+            VdndfiSpXOYryjNXatEQLbAbhLOnxnKvnBX+3uZvGtVkMd8S5yExWN3le2z8/crZ
+            PvujHU8efPkevpZP7OJv55cCAwEAAQ==
+            -----END PUBLIC KEY-----
+kind: ConfigMap
+metadata:
+  name: example-static-config
+  namespace: traefikee

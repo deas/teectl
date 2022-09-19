@@ -1,0 +1,99 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: teectl-create-plugin
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  # activeDeadlineSeconds: 0
+  backoffLimit: 3
+  suspend: false
+  template:
+    spec:
+      serviceAccountName: default
+      restartPolicy: Never
+      volumes:
+        - name: data # TODO: Hacky af (name) - safes one volum
+          emptyDir: #{}
+            medium: Memory
+        - name: config
+          secret:
+            secretName: "example-teectl-config" 
+      initContainers:
+        - image: amazon/aws-cli
+          name: get-plugin
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: aws-env
+            - configMapRef:
+                name: teectl
+          #env:
+          #  - name: PLUGIN_VERSION
+          #    value: "0.5.7"
+          #  - name: PLUGIN_NAME
+          #    value: mc-auth-plugin
+          #  - name: S3_BASE_URL
+          #    value: "s3://contentreich-backups"
+          volumeMounts:
+            - mountPath: /.config
+              name: data
+          args:
+            - s3
+            - cp
+            - $(S3_BASE_URL)/$(PLUGIN_NAME)-$(PLUGIN_VERSION).zip
+            - /.config/$(PLUGIN_NAME)-$(PLUGIN_VERSION).zip
+        - # image: ghcr.io/fluxcd/flux-cli:v0.25.2
+          # kind load docker-image deas/teectl:latest
+          image: deas/teectl:latest
+          name: teectl-import-cluster
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: aws-env
+            - configMapRef:
+                name: teectl
+          #env:
+          #  - name: USER # user: Current requires cgo or $USER set in environment
+          #    value: root  
+          volumeMounts:
+            - mountPath: /.config
+              name: data
+            - mountPath: /config
+              name: config
+              # readOnly: true 
+          args:
+            - cluster
+            - import
+            - --file=/config/teectl-config.yaml
+
+      containers:
+        - image: deas/teectl:latest
+          name: teectl-create-plugin
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: aws-env
+            - configMapRef:
+                name: teectl
+          #env:
+          #  - name: CLUSTER_NAME
+          #    value: a-cluster
+          #  - name: USER # user: Current requires cgo or $USER set in environment
+          #    value: root  
+          volumeMounts:
+            - mountPath: /.config
+              name: data
+            - mountPath: /config
+              name: config
+              # readOnly: true 
+          # command: ["ls", "-l"]
+          args:
+            - create
+            - plugin
+            - --cluster
+            - $(CLUSTER_NAME)
+            - --archivepath
+            - /.config/mc-auth-plugin-0.5.7.zip
+            - --version
+            - "0.5.7"

@@ -1,0 +1,32 @@
+{
+  "id": "5debd4f7-25f8-5b27-df34-396b2b627fe8",
+  "name": "Traefik Test",
+  "description": "Makes basic auth request to traefik dashbaord",
+  "order": [
+    "095bf9de-13f6-1c72-6a7a-243fea5d2bee"
+  ],
+  "folders": [],
+  "timestamp": 1438249510749,
+  "owner": "61671",
+  "remoteLink": "",
+  "public": false,
+  "requests": [
+    {
+      "id": "095bf9de-13f6-1c72-6a7a-243fea5d2bee",
+      "headers": "Authorization: Basic YWRtaW46YWRtaW4=",
+      "url": "http:///172.22.255.200/dashboard/",
+      "preRequestScript": "",
+      "pathVariables": {},
+      "method": "GET",
+      "data": [],
+      "version": 2,
+      "currentHelper": "normal",
+      "helperAttributes": {},
+      "time": 1438250908857,
+      "name": "GET Dashboard",
+      "description": "Simple GET request to Dashboard",
+      "collectionId": "5debd4f7-25f8-5b27-df34-396b2b627fe8",
+      "responses": []
+    }
+  ]
+}

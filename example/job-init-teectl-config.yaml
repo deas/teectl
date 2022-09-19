@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-secret-teectl-config
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  # activeDeadlineSeconds: 0
+  backoffLimit: 5
+  suspend: false
+  template:
+    spec:
+      serviceAccountName: default
+      restartPolicy: Never
+      volumes:
+        - name: data
+          emptyDir:
+            medium: Memory
+      initContainers:
+        - image: ghcr.io/fluxcd/flux-cli:v0.25.2
+          name: wait-for-controller
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: teectl
+          command:
+            - /bin/sh
+            - -ce
+            - |-
+              until nslookup -type=a ${CLUSTER_NAME}-ctrl-svc.traefikee.svc.cluster.local; do echo waiting for published dns records; sleep 1; done;
+      containers:
+        - image: ghcr.io/fluxcd/flux-cli:v0.25.2
+          # image: deas/teectl:latest
+          name: create-teectl-config-secret
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: teectl
+          #env:
+          #  - name: CLUSTER_NAME
+          #    value: a-cluster
+          #  - name: KUBE_CONFIG
+          #    value: /.kube/config
+          command:
+            - /bin/sh
+            - -ce
+            - |-
+              set -xe
+              echo $HOME
+              kubectl -n traefikee exec ${CLUSTER_NAME}-controller-0 -- /traefikee generate credentials --kubernetes.kubeconfig="${KUBE_CONFIG}" --cluster=${CLUSTER_NAME} > teectl-config.yaml
+              kubectl -n traefikee create secret generic ${CLUSTER_NAME}-teectl-config --from-file=teectl-config.yaml=teectl-config.yaml
