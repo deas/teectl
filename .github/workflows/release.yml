@@ -58,7 +58,7 @@ jobs:
       - name: Publish linux/amd64 image # multi-arch image
         uses: docker/build-push-action@v3
         with:
-          # push: true
+          push: true
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           # file: ./Dockerfile.xx
