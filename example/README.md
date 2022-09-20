@@ -16,7 +16,7 @@ teectl get nodes -cluster ${cluster_name}
 teectl get plugins -cluster ${cluster_name}
 ```
 
-To access the proxy service from you local machine, you might want to add an implementation of a LoadBalancer:
+To access the proxy service from your local machine, you might want to add an implementation of a LoadBalancer:
 
 ```shell
 make apply-lb
