@@ -1,7 +1,7 @@
 K8S_VERSION=v1.22.13
 CLUSTER_NAME=example
 
-.PHONY: test-integration 
+.PHONY: test-integration
 
 release.yaml:
 	helm template --release-name traefikee traefikee/traefikee --namespace traefikee -f traefikee-values.yaml > release.yaml
@@ -25,8 +25,8 @@ test-e2e:
 
 teectl-import:
 	kubectl exec -n traefikee ${CLUSTER_NAME}-controller-0 -- /traefikee generate credentials \
-    	--kubernetes.kubeconfig="$${HOME}/.kube/config"  --cluster=${CLUSTER_NAME} > teectl-config-${CLUSTER_NAME}.yaml
-	# TODO: Use the teectl docker image instead
+          --kubernetes.kubeconfig="$${HOME}/.kube/config"  --cluster=${CLUSTER_NAME} > teectl-config-${CLUSTER_NAME}.yaml
+  # TODO: Use the teectl docker image instead
 	teectl cluster import --force --file="teectl-config-${CLUSTER_NAME}.yaml"
 
 

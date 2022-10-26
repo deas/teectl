@@ -42,5 +42,5 @@ make test-e2e
 - RBAC: Fix abuse of (convenient) `default` `ServiceAccout`?
 - This GitOps Deployment appears very hard/hacky. Specifically around plugins and the static config. Should vendor take over?
 - Properly automation around Docker IPAM for LB
-- Implement `helm` (hooks)? Maybe ...
+- helm upgrade: Upstream fix needed for `cannot patch "patch-dns"` - see [`traefikee-1.3.0-mesh-job-hook-fix.diff`](traefikee-1.3.0-mesh-job-hook-fix.diff)
 - `flux 0.33.0` image: `/bin/sh: can't create teectl-config.yaml: Permission denied` - Just cosmetics. It does not matter in flux deployment env
